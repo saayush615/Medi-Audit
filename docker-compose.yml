@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17  # or pg16, pg15 based on Postgres version you want
+    container_name: medi-audit-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: medi_audit
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  # Admin Panel (Adminer)
+  adminer:
+    image: adminer:latest
+    container_name: medi-audit-admin
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
